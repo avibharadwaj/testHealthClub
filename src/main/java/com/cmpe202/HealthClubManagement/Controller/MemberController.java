@@ -1,13 +1,14 @@
 package com.cmpe202.HealthClubManagement.Controller;
 
+import com.cmpe202.HealthClubManagement.Dto.MemberDto;
 import com.cmpe202.HealthClubManagement.Model.Member;
+import com.cmpe202.HealthClubManagement.Service.EmployeeService;
+import com.cmpe202.HealthClubManagement.Service.Impl.EmployeeServiceImpl;
 import com.cmpe202.HealthClubManagement.Service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class MemberController {
@@ -24,4 +25,6 @@ public class MemberController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+
 }

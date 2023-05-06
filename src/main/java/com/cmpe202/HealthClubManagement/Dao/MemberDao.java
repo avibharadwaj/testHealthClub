@@ -8,10 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface MemberDao extends JpaRepository<Member, Integer> {
-
-    @Override
-    Optional<Member> findById(Integer integer);
+public interface MemberDao extends CrudRepository<Member, Integer> {
 
     Optional<Member> findByUsername(String userName);
 }

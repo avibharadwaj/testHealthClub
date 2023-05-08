@@ -19,8 +19,13 @@ public class ClassSchedule {
     private Time fromTime;
     private Time toTime;
     private String classType;
+
+    private int capacity;
+    private int availableSeats;
     @OneToOne
     private Employee instructor;
+
+    private String classStatus;
 
     public ClassSchedule() {
     }
@@ -31,6 +36,38 @@ public class ClassSchedule {
         this.fromTime = fromTime;
         this.toTime = toTime;
         this.classType = classType;
+    }
+
+    public String getClassStatus() {
+        return classStatus;
+    }
+
+    public void setClassStatus(String classStatus) {
+        this.classStatus = classStatus;
+    }
+
+    public int getClassScheduleId() {
+        return classScheduleId;
+    }
+
+    public void setClassScheduleId(int classScheduleId) {
+        this.classScheduleId = classScheduleId;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public int getAvailableSeats() {
+        return availableSeats;
+    }
+
+    public void setAvailableSeats(int availableSeats) {
+        this.availableSeats = availableSeats;
     }
 
     public HealthClub getHealthClub() {

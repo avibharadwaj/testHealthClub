@@ -1,16 +1,22 @@
 package com.cmpe202.HealthClubManagement.Model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.sql.Date;
 import java.sql.Time;
 
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "memberScheduleId")
 public class MemberSchedule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int memberScheduleId;
+
     private boolean onClassSchedule;
     @OneToOne
     private ClassSchedule classSchedule;
@@ -21,6 +27,9 @@ public class MemberSchedule {
     private String classType;
     @OneToOne
     private Employee instructor;
+
+    @OneToOne
+    private Member member;
 
     public MemberSchedule() {
     }
@@ -36,6 +45,22 @@ public class MemberSchedule {
         this.toTime = toTime;
         this.classType = classType;
         this.instructor = instructor;
+    }
+
+    public int getMemberScheduleId() {
+        return memberScheduleId;
+    }
+
+    public void setMemberScheduleId(int memberScheduleId) {
+        this.memberScheduleId = memberScheduleId;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 
     public boolean isOnClassSchedule() {

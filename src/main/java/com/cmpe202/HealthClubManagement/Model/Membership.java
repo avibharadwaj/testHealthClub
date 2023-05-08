@@ -1,8 +1,13 @@
 package com.cmpe202.HealthClubManagement.Model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "membershipTypeId")
 public class Membership {
 
     @Id
@@ -21,6 +26,14 @@ public class Membership {
         this.healthClub = healthClub;
         this.duration = duration;
         this.price = price;
+    }
+
+    public int getMembershipTypeId() {
+        return membershipTypeId;
+    }
+
+    public void setMembershipTypeId(int membershipTypeId) {
+        this.membershipTypeId = membershipTypeId;
     }
 
     public HealthClub getHealthClub() {

@@ -1,17 +1,21 @@
 package com.cmpe202.HealthClubManagement.Model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.util.List;
 
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "clubId")
 public class HealthClub {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int clubId;
     private String locationName;
-    private String locationId;
     @OneToMany(targetEntity = Employee.class)
     private List<Employee> employees;
     @OneToMany(targetEntity = Member.class)
@@ -24,10 +28,17 @@ public class HealthClub {
     public HealthClub() {
     }
 
-    public HealthClub(int clubId, String locationName, String locationId) {
+    public HealthClub(int clubId, String locationName) {
         this.clubId = clubId;
         this.locationName = locationName;
-        this.locationId = locationId;
+    }
+
+    public void setClubId(int clubId) {
+        this.clubId = clubId;
+    }
+
+    public int getClubId() {
+        return clubId;
     }
 
     public String getLocationName() {
@@ -36,14 +47,6 @@ public class HealthClub {
 
     public void setLocationName(String locationName) {
         this.locationName = locationName;
-    }
-
-    public String getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId(String locationId) {
-        this.locationId = locationId;
     }
 
     public List<Employee> getEmployees() {

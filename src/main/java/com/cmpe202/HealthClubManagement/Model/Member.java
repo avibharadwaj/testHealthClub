@@ -1,8 +1,10 @@
 package com.cmpe202.HealthClubManagement.Model;
 
+import com.cmpe202.HealthClubManagement.Dto.MemberDto;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.util.List;
 
@@ -23,10 +25,12 @@ public class Member {
 
     @OneToOne
     private HealthClub healthClub;
+
     @OneToOne
     private Membership membershipType;
     @OneToMany(targetEntity = Activity.class)
     private List<Activity> activities;
+
     @OneToMany(targetEntity = MemberSchedule.class)
     private List<MemberSchedule> mySchedule;
 
@@ -50,6 +54,12 @@ public class Member {
         this.phone = phone;
         this.address = address;
         this.membershipType = membershipType;
+    }
+
+    public Member(MemberDto memberDto) {
+        this.name = memberDto.name;
+        this.phone = memberDto.phone;
+        this.username = memberDto.username;
     }
 
     public HealthClub getHealthClub() {

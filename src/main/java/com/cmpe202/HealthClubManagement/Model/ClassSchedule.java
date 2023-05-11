@@ -1,6 +1,7 @@
 package com.cmpe202.HealthClubManagement.Model;
 
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.sql.Time;
 import java.sql.Date;

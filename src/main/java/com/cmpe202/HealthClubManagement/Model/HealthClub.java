@@ -2,7 +2,8 @@ package com.cmpe202.HealthClubManagement.Model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.util.List;
 

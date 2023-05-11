@@ -1,7 +1,7 @@
 package com.cmpe202.HealthClubManagement.Model;
 
-import jakarta.persistence.*;
-
+//import jakarta.persistence.*;
+import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
 
@@ -14,6 +14,8 @@ public class Activity {
     private boolean onSchedule;
     @OneToOne
     private MemberSchedule mySchedule;
+    @OneToOne
+    private Member member;
 
     private Date date;
     private Time fromTime;
@@ -24,6 +26,8 @@ public class Activity {
 
     private Time checkInTime;
     private Time checkOutTime;
+    private boolean isLogged;
+    private long loggedMinutes;
 
     public Activity() {
     }
@@ -39,6 +43,41 @@ public class Activity {
         this.toTime = toTime;
         this.classType = classType;
         this.instructor = instructor;
+    }
+
+    public Activity(MemberSchedule memberSchedule) {
+        this.onSchedule = true;
+        this.mySchedule = memberSchedule;
+        this.member = memberSchedule.getMember();
+        this.date = memberSchedule.getDate();
+        this.fromTime = memberSchedule.getFromTime();
+        this.toTime = memberSchedule.getToTime();
+        this.classType = memberSchedule.getClassType();
+        this.instructor = memberSchedule.getInstructor();
+    }
+
+    public boolean isLogged() {
+        return isLogged;
+    }
+
+    public long getLoggedMinutes() {
+        return loggedMinutes;
+    }
+
+    public void setLoggedMinutes(long loggedMinutes) {
+        this.loggedMinutes = loggedMinutes;
+    }
+
+    public void setLogged(boolean logged) {
+        isLogged = logged;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 
     public Time getCheckInTime() {

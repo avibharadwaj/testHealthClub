@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head xmlns:th="http://www.thymeleaf.org">
+    <title>Login Screen</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+      }
+      .login-box {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        text-align: center;
+      }
+      .login-box h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      .login-box input[type="text"],
+      .login-box input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: none;
+        border-bottom: 1px solid #ccc;
+        font-size: 16px;
+        outline: none;
+      }
+      .login-box input[type="submit"] {
+        background-color: #4CAF50;
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 18px;
+        cursor: pointer;
+      }
+      .login-box input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-box">
+      <h1>Login</h1>
+      <form id="login-form" th:action="@{/process-login}" method="post" th:object="${user}"  >
+        <div class="border border-secondary rounded p-3">
+          <div th:if="${param.error}">
+              <p class="text-danger">Invalid email/password or User may not be verified.</p>
+          </div>
+          <div th:if="${param.logout}">
+              <p class="text-warning">You have been logged out.</p>
+          </div>
+          <div>
+        <input type="text" name="username" th:field="*{username}" placeholder="Username">
+        <br>
+        <input type="password" name="password" th:field="*{password}" placeholder="Password">
+        <br>
+        <input type="submit" value="Login">
+      </form>
+    </div>
+    <!-- <script type="text/javascript" th:src="@{/js/script.js}"></script> th:action="@{/loginMember}" method="post" -->
+  </body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Sign Up - NTM</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container text-center">
+<div>
+    <h2>Login to NTM Marketplace</h2>
+    <br/>
+</div>
+
+
+  
+<form  th:action="@{/process-login}" method="post" th:object="${user}" style="max-width: 400px; margin: 0 auto;">
+<div class="border border-secondary rounded p-3">
+    <div th:if="${param.error}">
+        <p class="text-danger">Invalid email/password or User may not be verified.</p>
+    </div>
+    <div th:if="${param.logout}">
+        <p class="text-warning">You have been logged out.</p>
+    </div>
+    <div>
+        <p><input type="text" name="username" th:field="*{username}" required class="form-control" placeholder="E-mail" /></p>
+    </div>
+    <div>
+        <p><input type="password" name="password" th:field="*{password}" required class="form-control" placeholder="Password" /></p>
+    </div>
+    <div>
+        <p><input type="submit" value="Login" class="btn btn-primary" /></p>
+    </div>
+</div>
+</form>
+<br>
+</div>
+
+
+ Minified CSS and JS -->
+<!-- <link   rel="stylesheet" 
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
+        crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" 
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" 
+        crossorigin="anonymous">
+</script>  -->

@@ -2,7 +2,8 @@ package com.cmpe202.HealthClubManagement.Model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -31,12 +32,20 @@ public class MemberSchedule {
     @OneToOne
     private Member member;
 
+    @OneToOne
+    private Activity activity;
+
     public MemberSchedule() {
     }
 
     public MemberSchedule(boolean onClassSchedule, ClassSchedule classSchedule) {
         this.onClassSchedule = onClassSchedule;
         this.classSchedule = classSchedule;
+        this.date = classSchedule.getDate();
+        this.fromTime = classSchedule.getFromTime();
+        this.toTime = classSchedule.getToTime();
+        this.classType = classSchedule.getClassType();
+        this.instructor = classSchedule.getInstructor();
     }
 
     public MemberSchedule(Date date, Time fromTime, Time toTime, String classType, Employee instructor) {
@@ -45,6 +54,14 @@ public class MemberSchedule {
         this.toTime = toTime;
         this.classType = classType;
         this.instructor = instructor;
+    }
+
+    public Activity getActivity() {
+        return activity;
+    }
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
     }
 
     public int getMemberScheduleId() {

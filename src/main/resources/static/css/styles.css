@@ -1,0 +1,186 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+}
+
+header {
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav li {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+nav a {
+ 
+color: #fff;
+text-decoration: none;
+font-weight: bold;
+}
+
+
+.hero {
+background-size: cover;
+background-position: center;
+height: 500px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+}
+
+.hero h1 {
+font-size: 48px;
+margin-bottom: 20px;
+text-align: center;
+}
+
+.hero p {
+font-size: 24px;
+margin-bottom: 40px;
+text-align: center;
+}
+
+.btn {
+background-color: #f44336;
+color: #fff;
+padding: 5px 20px;
+border-radius: 5px;
+text-transform: uppercase;
+font-weight: bold;
+text-decoration: none;
+}
+
+.btn:hover {
+background-color: #e53935;
+}
+
+.services {
+background-color: #f9f9f9;
+padding: 50px;
+}
+
+.services h2 {
+text-align: center;
+}
+
+.services ul {
+list-style: none;
+margin: 0;
+padding: 0;
+}
+
+.services li {
+margin-bottom: 20px;
+}
+
+.services li i {
+margin-right: 10px;
+}
+
+.classes {
+padding: 50px;
+}
+
+.classes  h2 {
+text-align: center;
+}
+
+.classes  ul {
+list-style: none;
+margin: 0;
+padding: 0;
+}
+
+.classes li {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 20px;
+}
+
+.classes li .class-name {
+font-weight: bold;
+font-size: 24px;
+}
+
+.classes  li .class-time{
+color: #888;
+}
+
+ .memberClasses {
+  padding: 50px;
+  }
+  
+  .memberClasses  h2 {
+  text-align: center;
+  }
+  
+  .memberClasses  ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  }
+  
+  .memberClasses li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  }
+  
+  .memberClasses li .class-name {
+  font-weight: bold;
+  font-size: 24px;
+  }
+  
+  .memberClasses  li .class-time {
+  color: #888;
+  }
+
+  .class-instructor{
+    color: #888;
+  }
+
+  .class-availble-seats{
+    color: green;
+  }
+.newmembers,.freetrials,.analytics,.checkout,.checkin {
+  padding: 25px;
+}
+
+section{
+  text-align: center;
+}
+
+
+
+.footer {
+background-color: #333;
+color: #fff;
+padding: 20px;
+text-align: center;
+}
+
+.footer p {
+margin: 0;
+}
+
+.fas {
+font-size: 24px;
+margin-right: 10px;
+}

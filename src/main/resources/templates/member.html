@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head xmlns:th="http://www.thymeleaf.org">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthClub Membership Management System</title>
+    <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body>
+
+    <header>
+      <nav>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#classes">Classes</a></li>
+          <li><a href="#services">Membership</a></li>
+          <li><a href="#contactUs">Contact Us</a></li>
+          <li style="float:right">        
+            <form th:action="@{/logout}" method="post">
+            <input id="loginBtn" class="btn" type="submit" value="Sign Out"/>
+            </form>
+          </li>
+          <li style="float:right">
+            <select id="locationDropdown">
+              <option value="">Select location</option>
+              <option value="sj" selected>San Jose</option>
+              <option value="la">Los Angeles</option>
+              <option value="c">Chicago</option>
+            </select>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+    
+      <!-- Hero section -->
+      <section class="hero";>
+        <h1>Welcome to HealthClub Membership Management System</h1>
+      </section>
+    
+    <section class="activities" id="activities">
+      <h2>Activities</h2>
+        <form id="activitiesForm">
+          <label for="activity-type">Activity Type:</label>
+          <select id="activity-type">
+            <option value="week">Past Week</option>
+            <option value="month">Past Month</option>
+            <option value="90days">Past 90 Days</option>
+          </select>
+          <button type="submit">View</button>
+        </form>
+        <div id="showActivities"></div>
+    </section>
+    
+    <section class="logHours" id="logHours">
+      <h2>Log Hours</h2>
+    <form>
+      <label for="activity">Activity:</label>
+      <select id="activity">
+        <option value="2">Swim</option>
+        <option value="3">Gym</option>
+        <option value="4">Dance</option>
+        <option value="8">Cycle</option>
+      </select>
+      <label for="hours">Hours:</label>
+      <input type="number" id="hours" name="hours" min="1" max="10">
+      <button type="submit" id="logHoursBtn">Log Hours</button>
+    </form>
+    </section>
+    
+    
+      <!-- Services section -->
+      <section class="services" id="services">
+        <h2>Our Services</h2>
+        <ul id="servicesUl">
+         
+        </ul>
+      </section>
+    
+      <!--Members Classes section -->
+      <section class="memberClasses" id="memberClasses">
+        <h2>Your Classes Schedule</h2>
+        <ul id="memberClassesUl">
+          
+        </ul>
+      </section>
+     
+      <!-- Classes section -->
+      <section class="classes" id="classes">
+        <h2>Classes schedule you may condiser</h2>
+        <ul id="classesUl">
+          
+        </ul>
+      </section>
+    
+      <!-- Contact Us section -->
+      <footer style="text-align: center;" id="contactUs">
+        <div class="contact-info">
+          <h3>Contact Us</h3>
+          <p>Email: info@example.com</p>
+          <p>Phone: (123) 456-7890</p>
+          <p>Address: 1 Washington Sq, San Jose, CA 95192
+          </p>
+        </div>
+        
+      </footer>
+    </main>
+    <script type="text/javascript" th:src="@{/js/script_members.js}"></script>
+  </body>
+</html>

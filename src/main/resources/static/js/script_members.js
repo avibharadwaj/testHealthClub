@@ -39,7 +39,7 @@ function getMemberClasses(){
 
 
   const url = 'http://localhost:8080/mySchedule?' + new URLSearchParams({
-    username: name
+    username: 'Sujit'
 });
 
     fetch(url, {

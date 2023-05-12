@@ -15,8 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
-import java.time.Duration;
-import java.time.temporal.Temporal;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -65,6 +64,26 @@ public class MemberServiceImpl implements MemberService {
             Optional<Member> member = memberDao.findByUsername(username);
             System.out.println("Member found?: " + member.isPresent());
             if (member.isPresent()) {
+                List<MemberSchedule> memberSchedules = member.get().getMySchedule();
+                for (MemberSchedule memberSchedule: memberSchedules) {
+                    if (memberSchedule.getToTime().toLocalTime().isBefore(LocalTime.now())) {
+                        if (memberSchedule.getActivity() == null) {
+                            Activity activity = new Activity(memberSchedule);
+                            memberSchedule.setActivity(activity);
+                            activity.setMember(member.get());
+                            activity.setMySchedule(memberSchedule);
+                            List<Activity> activities = member.get().getActivities();
+                            activities.add(activity);
+                            member.get().setActivities(activities);
+                            activityDao.save(activity);
+                            memberScheduleDao.save(memberSchedule);
+                            List<MemberSchedule> memberSchedules1 = member.get().getMySchedule();
+                            memberSchedules1.add(memberSchedule);
+                            member.get().setMySchedule(memberSchedules1);
+                            memberDao.save(member.get());
+                        }
+                    }
+                }
                 return activityDao.findAllByMember_Username(username);
             }
         } catch (Exception e) {
@@ -143,19 +162,15 @@ public class MemberServiceImpl implements MemberService {
                 return "Member not found";
             }
 
-            Optional<MemberSchedule> memberSchedule = memberScheduleDao.findById(logHoursDto.myScheduleId);
-            if (memberSchedule.isEmpty()) {
-                return "Given class not on member schedule. Cannot log hours.";
+            Optional<Activity> activityOptional = activityDao.findById(logHoursDto.activityId);
+
+            if (activityOptional.isEmpty()) {
+                return "Activity not found";
             }
+            Activity activity = activityOptional.get();
+            MemberSchedule memberSchedule = activity.getMySchedule();
 
             String result = "";
-            Activity activity = memberSchedule.get().getActivity();
-            if (activity == null) {
-                System.out.println("Adding activity. Logging hours. ");
-                result = "Adding activity. Logging hours.";
-                activity = new Activity(memberSchedule.get());
-            }
-
             long loggedMinutes = activity.getLoggedMinutes();
             long toLogMinutes = logHoursDto.minutes;
             if (loggedMinutes != 0) {
@@ -163,7 +178,7 @@ public class MemberServiceImpl implements MemberService {
                 result = result.concat("Already logged hours for this class. Overwriting it.");
                 toLogMinutes = logHoursDto.minutes;
             }
-            long classTime = Math.abs(memberSchedule.get().getFromTime().getTime() - memberSchedule.get().getToTime().getTime());
+            long classTime = Math.abs(memberSchedule.getFromTime().getTime() - memberSchedule.getToTime().getTime());
             long classMinutes = TimeUnit.MILLISECONDS.toMinutes(classTime);
             if (classMinutes < logHoursDto.minutes) {
                 System.out.println("Trying to log more hours than class duration. Logging hours for the total class duration.");
@@ -173,9 +188,8 @@ public class MemberServiceImpl implements MemberService {
 
             activity.setLogged(true);
             activity.setLoggedMinutes(toLogMinutes);
-            memberSchedule.get().setActivity(activity);
             activityDao.save(activity);
-            memberScheduleDao.save(memberSchedule.get());
+            memberScheduleDao.save(memberSchedule);
             memberDao.save(member.get());
             System.out.println("Logged hours successfully");
             return result.concat("Logged hours successfully");

@@ -56,6 +56,10 @@ public class Activity {
         this.instructor = memberSchedule.getInstructor();
     }
 
+    public int getActivityId() {
+        return activityId;
+    }
+
     public boolean isLogged() {
         return isLogged;
     }

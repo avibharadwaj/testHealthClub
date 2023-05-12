@@ -17,6 +17,7 @@ public class ActivityDto {
         this.checkOutTime = activity.getCheckOutTime();
         this.onSchedule = activity.isOnSchedule();
         this.loggedMinutes = activity.getLoggedMinutes();
+        this.activityId = activity.getActivityId();
     }
 
     public Date date;
@@ -28,4 +29,5 @@ public class ActivityDto {
     public Time checkOutTime;
     public boolean onSchedule;
     public long loggedMinutes;
+    public int activityId;
 }

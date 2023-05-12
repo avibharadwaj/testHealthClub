@@ -17,7 +17,9 @@ newmembersSection.querySelector('form').addEventListener('submit',async (e)=>{
         body: JSON.stringify({
             username: newMemberName,
             email: newMemberEmail,
-            phone: newMemberPhone
+            phone: newMemberPhone,
+            locationName: document.getElementById('locationDropdown').value,
+            membershipId: ''
         }),
         headers: {
             "Content-Type": "application/json"
@@ -38,10 +40,227 @@ newmembersSection.querySelector('form').addEventListener('submit',async (e)=>{
         newmembersSection.querySelector('#name').value='';
         newmembersSection.querySelector('#email').value='';
         newmembersSection.querySelector('#phone').value='';
+        
     });
 
     
 
 })
 
+const checkInForm = document.getElementById('checkInForm');
+ 
 
+checkInForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const memberName = checkInForm.querySelector('#member_id').value;
+    const activitySelected = checkInForm.querySelector('#activity').value;
+    const date = new Date();
+    const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    const url = 'http://localhost:8080/checkIn';
+    console.log("username: ", memberName, "activity: ", activitySelected, "time: ", time);
+    fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        body: JSON.stringify({
+            username: memberName,
+            myScheduleId: activitySelected,
+            time: time
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }).then(res =>{
+        if (res.status===200){
+            res.text().then(text => {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: text,
+                showConfirmButton: false,
+                timer: 1500
+            })})
+        }
+        else if (res.status===400){
+            res.text().then(text => {
+            swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: text,
+                showConfirmButton: false,
+                timer: 1500
+            })})
+        }
+        else{
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: `Something went wrong!`,
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    })
+    .catch(err => {
+        console.log("Error");
+        console.log(err);
+    });
+    // .then(response=>{
+        // if(response.checkInStatus==='Checked In'){
+        //     Swal.fire({
+        //         position: 'top-end',
+        //         icon: 'success',
+        //         title: `Checked In ${memberName}!`,
+        //         showConfirmButton: false,
+        //         timer: 1500
+        //     })
+        // }
+    // })
+    
+
+});
+
+
+const checkOutForm = document.getElementById('checkout');
+
+
+checkOutForm.addEventListener('submit', function(e) {
+
+    e.preventDefault();
+    const memberName = checkOutForm.querySelector('#member_id').value;
+    const date = new Date();
+    const time = console.log();
+    const currentDate = `${date.getFullYear()}:${date.getMonth()}:${date.getDate()}`;
+    const currentTime = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    console.log(currentDate, currentTime);
+    const url = 'http://localhost:8080/checkOut';
+    fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        body: JSON.stringify({
+            username: memberName,
+            date: currentDate,
+            time: currentTime
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }).then(res => {
+        if (res.status===200){
+            res.text().then(text => {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: text,
+                showConfirmButton: false,
+                timer: 1500
+            })})
+        }
+        else if (res.status===400){
+            res.text().then(text => {
+            swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: text,
+                showConfirmButton: false,
+                timer: 1500
+            })})
+        }
+        else{
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: `Something went wrong!`,
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    })
+    .catch(err => {
+        console.log("Error");
+        console.log(err);
+    });
+    // .then(response=>{
+        // if(response.checkOutStatus==='Checked Out'){
+        //     Swal.fire({
+        //         position: 'top-end',
+        //         icon: 'success',
+        //         title: `Checked Out ${memberName}!`,
+        //         showConfirmButton: false,
+        //         timer: 1500
+        //     })
+        // }
+    // })
+});
+
+
+const freeTrailsForm = document.getElementById('freeTrails');
+
+freeTrailsForm.addEventListener('submit', function(e) {
+    
+        e.preventDefault();
+        const username = freeTrailsForm.querySelector('#userName').value;
+        const memberName = freeTrailsForm.querySelector('#name').value;
+        const phone = freeTrailsForm.querySelector('#phone').value;
+       console.log(username, memberName, phone);
+        const url = 'http://localhost:8080/signUpTrial';
+        fetch(url, {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                username: username,
+                memberName: memberName,
+                phone: phone,
+                locationName: document.getElementById('locationDropdown').value,
+                membershipDuration: 0
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(res => {
+            if (res.status===200){
+                res.text().then(text => {
+                    console.log(text);
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: "Free Trail Activated!",
+                    showConfirmButton: false,
+                    timer: 1500
+                })})
+            }
+            else if (res.status===400){
+                res.text().then(text => {
+                swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: text,
+                    showConfirmButton: false,
+                    timer: 1500
+                })})
+            }
+            else{
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: `Something went wrong!`,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+        })
+        .catch(err => {
+            console.log("Error");
+            console.log(err);
+        });
+        // .then(response=>{
+            // if(response.freeTrailsStatus==='Free Trail'){
+            //     Swal.fire({
+            //         position: 'top-end',
+            //         icon: 'success',
+            //         title: `Free Trail ${memberName}!`,
+            //         showConfirmButton: false,
+            //         timer: 1500
+            //     })
+            // }
+        // })
+    });

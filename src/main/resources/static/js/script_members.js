@@ -1,35 +1,47 @@
 
 const memberClasses = document.getElementById('memberClassesUl');
 const services = document.getElementById('servicesUl');
-const activities = document.getElementById('activities');
-const logHours = document.getElementById('logHours');
+const activitiesForm = document.getElementById('activitiesForm');
+const showActivities = document.getElementById('showActivities');
+const logHoursBtn = document.getElementById('logHoursBtn');
 const classes = document.getElementById('classesUl');
+const currentActivity = document.getElementById('activity');
 
-var name;
-var email;
-var phone;
-var enrollmentStatus;
+
+global = {
+    name: '',
+    userName : '',
+    phone : '',
+    location : document.getElementById('locationDropdown').value,
+}
+
+
 
 function getmemberDetails(){
+    console.log("inside getmemberDetails");
   const url = 'http://localhost:8080/getUser?' + new URLSearchParams({
-    username: 'Sujit'
+    username: 'sk@gmail.com'
     });
     
-        fetch(url, {
+    fetch(url, {
             method: 'GET',
             mode: 'cors',
             headers: {
                 "Content-Type": "application/json"
             }
         }).then(res => res.json()).then(response=>{
-            name = response.name,
-            email = response.email,
-            phone = response.phone,
-            enrollmentStatus = response.enrollmentStatus
+            console.log(response);
+            global.name = response.name;
+            global.userName = response.username;
+            global.phone = response.phone;
+            enrollmentStatus = response.enrollmentStatus;
+           
         }).catch(err => {
             console.error(err);
         }).finally(()=>{
-           
+            console.log("getMemberClasses fucntion called");
+            getMemberClasses();
+
         });
 }
 
@@ -37,12 +49,12 @@ function getmemberDetails(){
 // For members
 function getMemberClasses(){
 
+    console.log("inside getMemberClasses with userName : " + global.userName);
 
-  const url = 'http://localhost:8080/mySchedule?' + new URLSearchParams({
-    username: 'Sujit'
+  const url = 'http://localhost:8080/member/mySchedule?' + new URLSearchParams({
+    username: global.userName
 });
-
-    fetch(url, {
+     fetch(url, {
         method: 'GET',
         mode: 'cors',
         headers: {
@@ -58,7 +70,7 @@ function getMemberClasses(){
     }).catch(err => {
         console.error(err);
     }).finally(()=>{
-       
+      
     });
 
    
@@ -68,76 +80,131 @@ function resetContent(){
   console.log("inside resetContent");
   memberClasses.innerHTML = '';
   services.innerHTML = '';
-  activities.innerHTML = '';
-  logHours.innerHTML = '';
+//   activities.innerHTML = '';
+//   logHours.innerHTML = '';
   classes.innerHTML = '';
 }
 
 // For everyone
 function getClasses(){
 
+ global.location = document.getElementById('locationDropdown').value;
+
   resetContent();
 
-  const location = document.getElementById('locationDropdown');
+//   const location = document.getElementById('locationDropdown');
 
   const url = 'http://localhost:8080/schedule?' + new URLSearchParams({
-      locationName: location.value
+      locationName: global.location
   });
-  
       fetch(url, {
           method: 'GET',
           mode: 'cors',
           headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "*",
+                    "Access-Control-Allow-Methods": "*",
+                    "Access-Control-Allow-Credentials": "true",
+                    "Access-Control-Max-Age": "180",
+                    "Access-Control-Expose-Headers": "*",
+                    "Access-Control-Request-Headers": "*",
+                    "Access-Control-Request-Method": "*",
+                    "Origin": "*"
           }
       }).then(res => res.json()).then(response=>{
-        //  console.log(response);
-         response.forEach(element => {
+            //  console.log(response);
+         response.forEach((element,index) => {
           classes.innerHTML += `
-          <li><span class="class-name">${element.classType}</span> <span class="class-instructor">Instructor : ${element.instructor} </span> <span class="class-time">Tuesday 6:00 PM - 7:00 PM</span> <span class="class-availble-seats">Availble Seats : ${element.freeSeats} </span> <a href="#" class="btn" id="signupBtn">Sign up</a></li>
+          <li id=${index}><span class="class-name">${element.classType}</span> <span class="class-instructor">Instructor : ${element.instructor} </span> <span class="class-time">Tuesday 6:00 PM - 7:00 PM</span> <span class="class-availble-seats">Availble Seats : ${element.freeSeats} </span> <button class="btn" id="signupBtn${index}">Sign up</button></li>
           `;
-
-          const signupBtn = document.getElementById('signupBtn'); // or use a class name to select the button
-
-          signupBtn.addEventListener('click', function(event) {
-            event.preventDefault(); // prevent the default behavior of the link
-            
-              ////////////////////
-
-                  const url = 'http://localhost:8080/enroll';
-
-                  fetch(url, {
-                      method: 'POST',
-                      mode: 'cors',
-                      body: JSON.stringify({
-                          username: newMemberName,
-                          email: newMemberEmail,
-                          phone: newMemberPhone
-                      }),
-                      headers: {
-                          "Content-Type": "application/json"
-                      }
-                  }).then(res => res.json()).then(response=>{
+         //   const signupBtn = document.getElementById(`signupBtn${index}`); // or use a class name to select the button
+             console.log("DEBUG HITTING SIGNUP BUTTON");
+            //   console.log(signupBtn.outerHTML);
+            //   console.log("adding event listener to signup button : " + signupBtn);
+             classes.querySelectorAll('li').forEach((li) => {
+            li.addEventListener('click', (event) =>{
                     
-                  }).catch(err => {
-                      console.error(err);
-                  }).finally(()=>{
-                    
-                  });
-      
-            /////////////////////
-          });
+                    console.log("inside event listener");
+                    console.log(event.target.id);
+                    if(event.target.classList.contains('btn')){
+                        const index = event.target.id.replace('signupBtn', '');
+                        console.log("index : " + index);
+                        console.log("response[index].classID : " + response[index].classID);
+                        const url = 'http://localhost:8080/member/classRegister?' + new URLSearchParams({
+                            username: global.userName,
+                            classId: response[index].classID
+                        });
 
-         });
-      }).catch(err => {
-          console.error(err);
-      }).finally(()=>{
-         
-      });
-  // classes.innerHTML = `
-  //           <li><span class="class-name">Zumba</span> <span class="class-time">Tuesday 6:00 PM - 7:00 PM</span> <span class="class-instructor">Instructor : durgaInstructorNameHere </span> <span class="class-availble-seats">Availble Seats : durgaInstructorNameHere </span> <a href="#" class="btn">Sign up</a></li>
-  //           `;
+                        fetch(url, {
+                                        method: 'POST',
+                                        mode: 'cors',
+                                        headers: {
+                                            "Content-Type": "application/text",
+                                            "Access-Control-Allow-Origin": "*",
+                                            "Access-Control-Allow-Headers": "*",
+                                            "Access-Control-Allow-Methods": "*",
+                                            "Access-Control-Allow-Credentials": "true",
+                                            "Access-Control-Max-Age": "180",
+                                            "Access-Control-Expose-Headers": "*",
+                                            "Access-Control-Request-Headers": "*",
+                                            "Access-Control-Request-Method": "*",
+                                            "Origin": "*"
+                                        }
+                                    }).then((res) => {
+                                        console.log(res.status);
+                                        if (res.status == 400){
+                                            res.text().then(text => {
+                                                Swal.fire({
+                                                    position: 'center',
+                                                    icon: "error",
+                                                    title: text,
+                                                    showConfirmButton: false,
+                                                    timer: 1500
+                                                })
+                                                
+                                            });
+                                           
+                                        }
+                                        else if (res.status == 200){
+                                            Swal.fire({
+                                                position: 'center',
+                                                icon: "success",
+                                                title: "Successfully registered for the class",
+                                                showConfirmButton: false,
+                                                timer: 1500
+                                            })
+                                        }
+                                        else{
+                                            Swal.fire({
+                                                position: 'center',
+                                                icon: "error",
+                                                title: "Something went wrong",
+                                                showConfirmButton: false,
+                                                timer: 1500
+                                            })
+                                            
+                                        }
+                                    })
+                                    .catch(err => {
+                                        console.error(err);
+                                    }).finally(()=>{
+                                    
+                                    });
+                    }});});
+
+            }
+            );
+}).catch(err => {
+            console.error(err);
+        }).finally(()=>{
+            console.log("getClasses fucntion called");
+            getServices();
+        }
+        );
 }
+
+
 
 
 
@@ -150,38 +217,105 @@ function getServices(){
     `;
 }
 
-function getActivities(){
-    activities.innerHTML = `
-        <h2>Activities</h2>
-        <form>
-          <label for="activity-type">Activity Type:</label>
-          <select id="activity-type">
-            <option value="past-week">Past Week</option>
-            <option value="past-month">Past Month</option>
-            <option value="past-90-days">Past 90 Days</option>
-          </select>
-          <button type="submit">View</button>
-        </form>
-    `;
+function activitiesOnSubmit(e){
+    showActivities.innerHTML = '';
+    e.preventDefault();
+    const selectedValue = activitiesForm.querySelector('select').value;
+    console.log(selectedValue);
+    
+
+    const url = 'http://localhost:8080/member/activity?' + new URLSearchParams({
+        username: global.userName,
+        duration: selectedValue
+    });
+    
+        fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(res => res.json()).then(response=>{
+           console.log(response);
+           response.forEach(element => {
+            const ele = document.createElement('p');
+            ele.innerHTML = `Class Type: ${element.classType} Date: ${element.date} From: ${element.fromTime} To: ${element.toTime} instructor: ${element.instructor}`;
+            showActivities.appendChild(ele);
+              });
+           // Need to implement this after adding mock data to db
+        }).catch(err => {
+            console.error(err);
+        }).finally(()=>{
+           
+        });
+    
 }
 
 
-function getLogHours(){
-    logHours.innerHTML = `
-    <h2>Log Hours</h2>
-    <form>
-      <label for="activity">Activity:</label>
-      <select id="activity">
-        <option value="treadmill">Treadmill</option>
-        <option value="cycling">Cycling</option>
-        <option value="stair-machines">Stair Machines</option>
-        <option value="weight-training">Weight Training</option>
-      </select>
-      <label for="hours">Hours:</label>
-      <input type="number" id="hours" name="hours" min="1" max="10">
-      <button type="submit">Log Hours</button>
-    </form>
-    `;
+function logHours(e){
+    e.preventDefault();
+    console.log("logHours called");
+    const url = 'http://localhost:8080/member/logHours';
+
+    var hours = document.getElementById('hours').value;
+
+    fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        body: JSON.stringify({
+            username: global.userName,
+            minutes: hours*60,
+            myScheduleId: currentActivity.value
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }).then(res =>{
+        
+        if (res.status == 400){
+                            res.text().then(text => {
+                                Swal.fire({
+                                    position: 'center',
+                                    icon: "error",
+                                    title: text,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                                
+                            });
+                           
+        }
+        else if (res.status == 200){
+            res.text().then(text => {
+                            Swal.fire({
+                                position: 'center',
+                                icon: "success",
+                                title: text,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        })}
+        else{
+            Swal.fire({
+                position: 'center',
+                icon: "error",
+                title: "Something went wrong",
+                showConfirmButton: false,
+                timer: 1500
+                })
+                            
+        }
+
+    //     console.log(res);
+    //     res.json()
+    // // } ).then(response=>{
+    // //    console.log(response);
+    }).catch(err => {
+        console.error(err);
+    }).finally(()=>{
+       
+    });
+    
 }
 
 console.log(location.pathname);
@@ -214,14 +348,17 @@ console.log(location.pathname);
 
 
 function init(){
-    getActivities();
-    getLogHours();
-    getMemberClasses();
+    getmemberDetails();
+    
+
+ 
     getClasses();
     getServices();
-    getmemberDetails();
+    
     document.getElementById('locationDropdown').addEventListener('change', getClasses);
-
+    activitiesForm.addEventListener('submit', activitiesOnSubmit);
+    logHoursBtn.addEventListener('click', logHours);
+    console.log(logHoursBtn.value);
 
 }
 document.addEventListener('DOMContentLoaded', init);

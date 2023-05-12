@@ -14,12 +14,12 @@ import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.YearMonth;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
@@ -76,8 +76,8 @@ public class DashboardServiceImpl implements DashboardService {
             String weekStartDate = startDate.format(dateFormatter);
             String weekEndDate = endDate.format(dateFormatter);
             Map<String, Object> weekData = new LinkedHashMap<>();
-            weekData.put("weekStartDate", weekStartDate);
-            weekData.put("weekEndDate", weekEndDate);
+            //weekData.put("weekStartDate", weekStartDate);
+            //weekData.put("weekEndDate", weekEndDate);
             for (Map.Entry<String, List<ClassSchedule>> subEntry : entry.getValue().entrySet()) {
                 String className = subEntry.getKey();
                 List<ClassSchedule> enrollments = subEntry.getValue();
@@ -185,6 +185,81 @@ public class DashboardServiceImpl implements DashboardService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public Map<?, ?> getHourlyOccupancy(String locationName, String filter) {
+        try {
+            Map<Object, Object> responseMap = new HashMap<>();
+            HealthClub healthClub = healthClubDao.getByLocationName(locationName);
+            if (healthClub == null) {
+                responseMap.put("Error", "Health club not found");
+                return responseMap;
+            }
+
+            List<Member> members = memberDao.findAllByHealthClubClubId(healthClub.getClubId());
+            if (members.size() == 0) {
+                responseMap.put("Error", "No members registered for given Health club");
+                return responseMap;
+            }
+
+            List<Activity> activities = new ArrayList<>();
+            for (Member member: members) {
+                System.out.println("Member activities: "+ member.getName() + " - count: " + member.getActivities().size());
+                activities.addAll(member.getActivities());
+            }
+
+            System.out.println("Activities size: "+activities.size());
+            if (filter.equalsIgnoreCase("day")) {
+                return this.getHourlyOccupancyByDay(activities);
+            }
+
+            if (filter.equalsIgnoreCase("weekday")) {
+                return this.getHourlyOccupancyByWeekday(activities);
+            }
+
+            if (filter.equalsIgnoreCase("weekend")) {
+                return this.getHourlyOccupancyByWeekend(activities);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Map<?,?> getHourlyOccupancyByWeekend(List<Activity> activities) {
+        return activities.stream()
+                .filter(activity -> activity.getCheckInTime() != null &&
+                        (activity.getDate().toLocalDate().getDayOfWeek() == DayOfWeek.SATURDAY ||
+                                activity.getDate().toLocalDate().getDayOfWeek() == DayOfWeek.SUNDAY))
+                .collect(Collectors.groupingBy(
+                        activity -> activity.getDate().toLocalDate().get(WeekFields.ISO.weekOfWeekBasedYear()),
+                        Collectors.groupingBy(
+                                activity -> activity.getCheckInTime().toLocalTime().getHour(),
+                                Collectors.counting()
+                        )
+                ));
+    }
+
+    private Map<?,?> getHourlyOccupancyByWeekday(List<Activity> activities) {
+        return activities.stream()
+                .filter(activity -> activity.getCheckInTime() != null
+                        && activity.getDate().toLocalDate().getDayOfWeek().getValue() < 6)
+                .collect(Collectors.groupingBy(
+                        activity -> activity.getDate().toLocalDate().atTime(activity.getCheckInTime().toLocalTime())
+                                .get(WeekFields.ISO.weekOfWeekBasedYear()),
+                        Collectors.groupingBy(
+                                activity -> activity.getCheckInTime().toLocalTime().getHour(),
+                                Collectors.counting()
+                        )
+                ));
+    }
+
+    private Map<?,?> getHourlyOccupancyByDay(List<Activity> activities) {
+        return activities.stream()
+                .filter(activity -> activity.getCheckInTime() != null)
+                .collect(Collectors.groupingBy(activity -> activity.getCheckInTime().toLocalTime().atDate(activity.getDate().toLocalDate()).toLocalDate(),
+                        Collectors.groupingBy(activity -> activity.getCheckInTime().toLocalTime().getHour(), Collectors.counting())));
     }
 
     private Map<?, ?> getTotalHoursByWeek(List<Activity> activities) {

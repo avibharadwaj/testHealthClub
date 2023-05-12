@@ -11,4 +11,6 @@ public interface DashboardService {
     Map<?, ?> getEnrollmentStatus(String locationName, String filter);
 
     Map<?, ?> getTotalHoursSpent(String locationName, String filter);
+
+    Map<?,?> getHourlyOccupancy(String locationName, String filter);
 }

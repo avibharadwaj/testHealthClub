@@ -31,20 +31,18 @@ public class DashboardController {
     private DashboardService dashboardService;
 
     @GetMapping("enrollmentStatus")
-    private ResponseEntity<String> getEnrollmentStatus(
+    private ResponseEntity<Map<?, ?>> getEnrollmentStatus(
             @RequestParam String locationName,
-            @RequestParam String filter) throws JsonProcessingException {
+            @RequestParam String filter) {
         Map<?, ?> dataMap = dashboardService.getEnrollmentStatus(locationName, filter);
-        ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(dataMap);
-        return new ResponseEntity<>(json, HttpStatus.OK);
+        return new ResponseEntity<>(dataMap, HttpStatus.OK);
     }
 
     @GetMapping("totalHoursSpent")
-    private ResponseEntity<String> getTotalHoursSpentOnGymByFilter(
+    private ResponseEntity<Map<?, ?>> getTotalHoursSpentOnGymByFilter(
             @RequestParam String locationName,
             @RequestParam String filter
-    ) throws JsonProcessingException {
+    ) {
         Map<?, ?> dataMap = dashboardService.getTotalHoursSpent(locationName, filter);
         System.out.println(dataMap);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -52,8 +50,21 @@ public class DashboardController {
         module.addSerializer(LocalDate.class, new LocalDateSerializer());
         module.addDeserializer(LocalDate.class, new LocalDateDeserializer());
         objectMapper.registerModule(module);
+        return new ResponseEntity<>(dataMap, HttpStatus.OK);
+    }
 
-        String json = objectMapper.writeValueAsString(dataMap);
-        return new ResponseEntity<>(json, HttpStatus.OK);
+    @GetMapping("hourlyOccupancy")
+    private ResponseEntity<Map<?, ?>> getHourlyOccupancyOnGymByFilter(
+            @RequestParam String locationName,
+            @RequestParam String filter
+    ) {
+        Map<?, ?> dataMap = dashboardService.getHourlyOccupancy(locationName, filter);
+        System.out.println(dataMap);
+        ObjectMapper objectMapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(LocalDate.class, new LocalDateSerializer());
+        module.addDeserializer(LocalDate.class, new LocalDateDeserializer());
+        objectMapper.registerModule(module);
+        return new ResponseEntity<>(dataMap, HttpStatus.OK);
     }
 }

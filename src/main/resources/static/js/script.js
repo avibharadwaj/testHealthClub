@@ -12,6 +12,7 @@ const services = document.getElementById('servicesUl');
 function getClasses(){
 
     const location = document.getElementById('locationDropdown');
+    classes.innerHTML = '';
 
     const url = 'http://localhost:8080/schedule?' + new URLSearchParams({
         locationName: location.value

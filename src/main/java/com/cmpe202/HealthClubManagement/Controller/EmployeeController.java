@@ -31,16 +31,18 @@ public class EmployeeController {
         }
     }
 
-    @PostMapping("checkIn")
+    @PostMapping("/checkIn")
     private ResponseEntity<String> checkInMember(@RequestBody CheckInOutDto checkInOutDto) {
+    	
         String response = employeeService.checkInMember(checkInOutDto);
+        System.out.println("DEBUG ------ RESPOSE "+response);
         if (response.contains("successfully")) {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("checkOut")
+    @PostMapping("/checkOut")
     private ResponseEntity<String> checkOutMember(@RequestBody CheckInOutDto checkInOutDto) {
         String response = employeeService.checkOutMember(checkInOutDto);
         if (response.contains("successfully")) {
@@ -49,7 +51,7 @@ public class EmployeeController {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("signUpTrial")
+    @PostMapping("/signUpTrial")
     private ResponseEntity<MemberDto> signUpNonMemberOnTrial(@RequestBody MemberDto memberDto) {
         System.out.println(memberDto.username);
         Member member = employeeService.signUpTrialMembership(memberDto);

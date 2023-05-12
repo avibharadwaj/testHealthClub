@@ -51,7 +51,12 @@ public class MemberController {
     public String registerUser(){
         return "register";
     }
-
+    	
+    @GetMapping("/analytics")
+    public String viewAnalytics() {
+    	return "analytics";
+    }
+    
     @GetMapping("/memberInfo")
     public String getMemberInfo(){
         return "member";

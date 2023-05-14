@@ -4,12 +4,16 @@ import com.cmpe202.HealthClubManagement.Dto.CheckInOutDto;
 import com.cmpe202.HealthClubManagement.Dto.MemberDto;
 import com.cmpe202.HealthClubManagement.Model.Member;
 import com.cmpe202.HealthClubManagement.Service.EmployeeService;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -31,24 +35,31 @@ public class EmployeeController {
         }
     }
 
+    @GetMapping("/checkIfEmployeeExists")
+    private String checkEmployee(@RequestParam String email){
+        System.out.println("Inside checkIfEmployeeExists");
+        return "";
+    }
+
     @PostMapping("/checkIn")
-    private ResponseEntity<String> checkInMember(@RequestBody CheckInOutDto checkInOutDto) {
-    	
-        String response = employeeService.checkInMember(checkInOutDto);
-        System.out.println("DEBUG ------ RESPOSE "+response);
-        if (response.contains("successfully")) {
+    private ResponseEntity<String> checkInMember(@RequestParam String username) {
+    	System.out.println("What is the username?");
+        System.out.println(username);
+        String response = employeeService.checkInMember(username);
+        if (response != null && response.contains("Successfully")) 
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/checkOut")
-    private ResponseEntity<String> checkOutMember(@RequestBody CheckInOutDto checkInOutDto) {
-        String response = employeeService.checkOutMember(checkInOutDto);
-        if (response.contains("successfully")) {
+    private ResponseEntity<String> checkOutMember(@RequestParam String username) {
+        System.out.println("What is the username?");
+        System.out.println(username);
+        String response = employeeService.checkOutMember(username);
+        System.out.println("From controller: "+response);
+        if (response != null && response.contains("Successfully")) 
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/signUpTrial")

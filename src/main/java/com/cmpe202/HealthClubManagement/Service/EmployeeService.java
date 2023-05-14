@@ -5,10 +5,13 @@ import com.cmpe202.HealthClubManagement.Dto.MemberDto;
 import com.cmpe202.HealthClubManagement.Model.Member;
 
 public interface EmployeeService {
-    Member enroll(Member member);
-    String checkInMember(CheckInOutDto checkInOutDto);
 
-    String checkOutMember(CheckInOutDto checkInOutDto);
+    Member enroll(Member member);
+    String checkInMember(String username);
+
+    String checkOutMember(String username);
 
     Member signUpTrialMembership(MemberDto memberDto);
+
+    
 }

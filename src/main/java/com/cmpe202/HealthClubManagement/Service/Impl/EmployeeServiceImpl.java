@@ -12,6 +12,12 @@ import com.cmpe202.HealthClubManagement.Service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.sql.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,7 +35,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Member enroll(Member member) {
         try {
-            memberDao.save(member);
+        	Optional<Member> m = memberDao.findByUsername(member.getUsername());
+            Member optM = m.get();
+            optM.setEnrollmentStatus("enrolled");
+            memberDao.save(optM);
+            return optM;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -37,35 +47,38 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public String checkInMember(CheckInOutDto checkInOutDto) {
+    public String checkInMember(String username) {
         try {
-            Optional<Member> member = memberDao.findByUsername(checkInOutDto.username);
+            System.out.println("checkInMember");
+        	Optional<Member> member = memberDao.findByUsername(username);
             if (member.isEmpty()) {
                 System.out.println("Member not found");
                 return "Member not found";
             }
 
-            Optional<MemberSchedule> memberSchedule = memberScheduleDao.findById(checkInOutDto.myScheduleId);
-            if (memberSchedule.isEmpty()) {
-                System.out.println("Not on schedule. Check in rejeted.");
-                return "Not on schedule. Check in rejeted.";
+            List<Activity> currOpenActivityList = member.get().getActivities();
+            Optional<Activity> act = currOpenActivityList.stream().filter(
+                activity -> activity.getCheckOutTime() == null
+            ).findAny();
+
+            if (act.isEmpty()) {
+                System.out.println("No null time found");
             }
 
-            String result = "";
-            Activity activity = memberSchedule.get().getActivity();
-            if (activity == null) {
-                System.out.println("Adding activity.");
-                result = "Adding activity.";
-                activity = new Activity(memberSchedule.get());
+            if (act.isPresent()) {
+                return "Please check out from previous session";
             }
 
-            activity.setCheckInTime(checkInOutDto.time);
-            memberSchedule.get().setActivity(activity);
+            Activity activity = new Activity();
+            activity.setMember(member.get());
+            activity.setCheckInTime(Time.valueOf(LocalTime.now()));
+            activity.setDate(Date.valueOf(LocalDate.now()));
+            List<Activity> activityList = new ArrayList<>();
+            activityList.add(activity);
+            member.get().setActivities(activityList);
             activityDao.save(activity);
-            memberScheduleDao.save(memberSchedule.get());
             memberDao.save(member.get());
-            System.out.println("Checked in successfully");
-            return result.concat("Checked in successfully");
+            return "Successfully Checked In";
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,38 +86,29 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public String checkOutMember(CheckInOutDto checkInOutDto) {
+    public String checkOutMember(String username) {
         try {
-            Optional<Member> member = memberDao.findByUsername(checkInOutDto.username);
+            System.out.println(username);
+        	Optional<Member> member = memberDao.findByUsername(username);
             if (member.isEmpty()) {
                 System.out.println("Member not found");
                 return "Member not found";
             }
 
-            Optional<MemberSchedule> memberSchedule = memberScheduleDao.findById(checkInOutDto.myScheduleId);
-            if (memberSchedule.isEmpty()) {
-                System.out.println("Not on schedule. Check out rejeted.");
-                return "Not on schedule. Check out rejeted.";
+            List<Activity> currOpenActivityList = member.get().getActivities();
+            Optional<Activity> act = currOpenActivityList.stream().filter(
+                activity -> activity.getCheckOutTime() == null
+            ).findAny();
+
+            if (act.isEmpty()) {
+                return "Please check in first to check out";
             }
 
-            Activity activity = memberSchedule.get().getActivity();
-            if (activity == null) {
-                System.out.println("No Check in found for this class. Check out rejected.");
-                return "No Check in found for this class. Check out rejected.";
-            }
-
-            if (checkInOutDto.time.before(activity.getCheckInTime())) {
-                System.out.println("Invalid check out time. Check out time should be after check in time.");
-                return "Invalid check out time. Check out time should be after check in time.";
-            }
-
-            activity.setCheckOutTime(checkInOutDto.time);
-            memberSchedule.get().setActivity(activity);
+            Activity activity = act.get();
+            activity.setCheckOutTime(Time.valueOf(LocalTime.now()));
             activityDao.save(activity);
-            memberScheduleDao.save(memberSchedule.get());
-            memberDao.save(member.get());
-            System.out.println("Checked out successfully");
-            return "Checked out successfully";
+            System.out.println("Successfully Checked Out");
+            return "Successfully Checked Out";
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -66,9 +66,8 @@ function updateVisitors(timePeriod) {
 function getChartDataClasses(timePeriod) {
     var chartData = {};
     if (timePeriod == 'day') {
-
       const url = 'http://localhost:8080/enrollmentStatus?' + new URLSearchParams({
-        locationName: '1',
+        locationName: document.getElementById('location').value,
         filter: 'day',
         });
     
@@ -125,7 +124,7 @@ function getChartDataClasses(timePeriod) {
 
 
       const url = 'http://localhost:8080/enrollmentStatus?' + new URLSearchParams({
-        locationName: '1',
+        locationName: document.getElementById('location').value,
         filter: 'week',
         });
     
@@ -208,7 +207,7 @@ function getChartDataClasses(timePeriod) {
  function getChartDataHours(timePeriod) {
     if (timePeriod == 'day') {      
       const url = 'http://localhost:8080/totalHoursSpent?' + new URLSearchParams({
-        locationName: '1',
+        locationName: document.getElementById('location').value,
         filter: 'day',
         });
     
@@ -247,7 +246,7 @@ function getChartDataClasses(timePeriod) {
     } 
     else if (timePeriod == 'week') {
       const url = 'http://localhost:8080/totalHoursSpent?' + new URLSearchParams({
-        locationName: '1',
+        locationName: document.getElementById('location').value,
         filter: 'week',
         });
       return fetch(url, {
@@ -293,7 +292,7 @@ function getChartDataClasses(timePeriod) {
 
 
       const url = 'http://localhost:8080/totalHoursSpent?' + new URLSearchParams({
-        locationName: '1',
+        locationName: document.getElementById('location').value,
         filter: 'month',
         });
       return fetch(url, {

@@ -8,10 +8,10 @@
         background-color: #f2f2f2;
       }
       .login-box {
-        position: absolute;
-        top: 50%;
+        /* position: relative; */
+        /* top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%); */
         background-color: #ffffff;
         padding: 30px;
         border-radius: 10px;
@@ -44,11 +44,83 @@
       .login-box input[type="submit"]:hover {
         background-color: #45a049;
       }
+      .register-box {
+        /* position: relative; */
+        /* top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); */
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        text-align: center;
+      }
+      .register-box h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      .register-box input[type="text"],
+      .register-box input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: none;
+        border-bottom: 1px solid #ccc;
+        font-size: 16px;
+        outline: none;
+      }
+      .register-box input[type="submit"] {
+        background-color: #4CAF50;
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 18px;
+        cursor: pointer;
+      }
+      .register-box input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+      /* .login-box, .register-box {
+        display: inline-block;
+        width: 45%;
+        vertical-align: top;
+    } */
+
+    .form-container{
+      display: flex;
+        justify-content: space-between;
+        width: 80%;
+        margin: auto;
+        padding-top:10%;
+    }
     </style>
   </head>
+  <link type='text/css' rel="stylesheet" href="css/styles.css">
   <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/home">Home</a></li>
+          <li><a href="/home">Classes</a></li>
+          <li><a href="/home">Membership</a></li>
+          <li><a href="/home">Contact Us</a></li>
+          <li style="float:right"><a href="employeeLogin" id="loginBtn" class="btn" >Employee Log In</a></li>
+          <!-- <li style="float:right"><a href="login" id="loginBtn" class="btn" >Member Log in</a></li> -->
+          <!-- <li style="float:right">
+            <select id="locationDropdown">
+              <option value="">Select location</option>
+              <option value="1" selected>San Jose</option>
+              <option value="2">Sunnyvale</option>
+              <option value="3">Milpitas</option>
+            </select>
+          </li> -->
+        </ul>
+      </nav>
+    </header>
+    <div class="form-container">
     <div class="login-box">
-      <h1>Login</h1>
+      <h1>Member - Login</h1>
       <form id="login-form" th:action="@{/process-login}" method="post" th:object="${user}"  >
         <div class="border border-secondary rounded p-3">
           <div th:if="${param.error}">
@@ -57,14 +129,32 @@
           <div th:if="${param.logout}">
               <p class="text-warning">You have been logged out.</p>
           </div>
-          <div>
-        <input type="text" name="username" th:field="*{username}" placeholder="Username">
+        </div>
+        <input type="text" name="username" th:field="*{username}" placeholder="Enter email">
         <br>
         <input type="password" name="password" th:field="*{password}" placeholder="Password">
         <br>
         <input type="submit" value="Login">
-      </form>
+      </form> 
     </div>
+    <div class="register-box">
+      <section class="registerform" id="registerform" style="text-align: center;">
+        <h1>Not a Member? Register/Sign Up</h1>
+          <form>
+              <input type="text" id="name" name="name" placeholder="Name">
+              <br>
+              <input type="text" id="username" name="username" placeholder="Email">
+              <br>
+              <input type="password" id="password" name="password" placeholder="Password">
+              <br>
+              <input type="text" id="phone" name="phone" placeholder="Phone">
+              <br>
+              <input type="submit" value="Register">
+          </form>
+          </section>
+      </div>
+      </div>
+      <script type="text/javascript" th:src="@{/js/script_register.js}"></script>
     <!-- <script type="text/javascript" th:src="@{/js/script.js}"></script> th:action="@{/loginMember}" method="post" -->
   </body>
 </html>

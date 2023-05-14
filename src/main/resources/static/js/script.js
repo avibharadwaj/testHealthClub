@@ -28,7 +28,7 @@ function getClasses(){
            console.log(response);
            response.forEach(element => {
             classes.innerHTML += `
-            <li><span class="class-name">${element.classType}</span> <span class="class-instructor">Instructor : ${element.instructor} </span> <span class="class-time">Tuesday 6:00 PM - 7:00 PM</span> <span class="class-availble-seats">Availble Seats : ${element.freeSeats} </span> <a href="#" class="btn">Sign up</a></li>
+            <li><span class="class-name">${element.classType}</span> <span class="class-instructor">Instructor : ${element.instructor} </span> <span class="class-time">${element.date} ${element.fromTime} - ${element.toTime}</span> <span class="class-availble-seats">Available Seats : ${element.freeSeats} </span></li>
             `;
            });
         }).catch(err => {

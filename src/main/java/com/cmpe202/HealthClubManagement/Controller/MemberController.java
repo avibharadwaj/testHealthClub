@@ -12,9 +12,11 @@ import com.cmpe202.HealthClubManagement.Service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.header.Header;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.function.ServerRequest.Headers;
 
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import java.time.LocalDate;
@@ -61,6 +63,11 @@ public class MemberController {
     public String getMemberInfo(){
         return "member";
     }
+    
+    @GetMapping(value="/employeeLogin")
+    public String employeeLogin(){
+        return "loginEmployee";
+    }
 
     @GetMapping("/getUser")
     private ResponseEntity<MemberDto> getMember(@RequestParam("username") String username) {
@@ -105,7 +112,8 @@ public class MemberController {
             }
             return new ResponseEntity<>(memberScheduleDtos, HttpStatus.FOUND);
         }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        List<MemberScheduleDto> noSchedule = new ArrayList<>();
+        return new ResponseEntity<>(noSchedule, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/member/activity")

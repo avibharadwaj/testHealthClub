@@ -6,6 +6,7 @@ newmembersSection.querySelector('form').addEventListener('submit',async (e)=>{
     newMemberPhone = newmembersSection.querySelector('#phone').value;
 
 
+
     
     console.log(newMemberName, newMemberEmail, newMemberPhone);
 
@@ -15,8 +16,8 @@ newmembersSection.querySelector('form').addEventListener('submit',async (e)=>{
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify({
-            username: newMemberName,
-            email: newMemberEmail,
+            name: newMemberName,
+            username: newMemberEmail,
             phone: newMemberPhone,
             locationName: document.getElementById('locationDropdown').value,
             membershipId: ''
@@ -25,11 +26,13 @@ newmembersSection.querySelector('form').addEventListener('submit',async (e)=>{
             "Content-Type": "application/json"
         }
     }).then(res => res.json()).then(response=>{
-        if(response.enrollmentStatus==='Enrolled'){
+        console.log("The data returned is:");
+        console.log(response);
+        if(response.enrollmentStatus==='enrolled'){
             Swal.fire({
                 position: 'top-end',
                 icon: 'success',
-                title: `New member ${newMemberName} added!`,
+                title: `New member ${newMemberName} enrolled!`,
                 showConfirmButton: false,
                 timer: 1500
             })
@@ -53,19 +56,16 @@ const checkInForm = document.getElementById('checkInForm');
 checkInForm.addEventListener('submit', function(e) {
     e.preventDefault();
     const memberName = checkInForm.querySelector('#member_id').value;
-    const activitySelected = checkInForm.querySelector('#activity').value;
-    const date = new Date();
-    const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-    const url = 'http://localhost:8080/checkIn';
-    console.log("username: ", memberName, "activity: ", activitySelected, "time: ", time);
+    // const activitySelected = checkInForm.querySelector('#activity').value;
+    // const date = new Date();
+    // const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    const url = 'http://localhost:8080/checkIn?' + new URLSearchParams({
+        username: memberName
+        });
+    console.log("username: ", memberName);
     fetch(url, {
         method: 'POST',
         mode: 'cors',
-        body: JSON.stringify({
-            username: memberName,
-            myScheduleId: activitySelected,
-            time: time
-        }),
         headers: {
             "Content-Type": "application/json"
         }
@@ -85,7 +85,7 @@ checkInForm.addEventListener('submit', function(e) {
             swal.fire({
                 position: 'center',
                 icon: 'error',
-                title: text,
+                title: `Member already checked in`,
                 showConfirmButton: false,
                 timer: 1500
             })})
@@ -132,15 +132,13 @@ checkOutForm.addEventListener('submit', function(e) {
     const currentDate = `${date.getFullYear()}:${date.getMonth()}:${date.getDate()}`;
     const currentTime = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
     console.log(currentDate, currentTime);
-    const url = 'http://localhost:8080/checkOut';
+    const url = 'http://localhost:8080/checkOut?'+ new URLSearchParams({
+        username: memberName
+        });
     fetch(url, {
         method: 'POST',
         mode: 'cors',
-        body: JSON.stringify({
-            username: memberName,
-            date: currentDate,
-            time: currentTime
-        }),
+
         headers: {
             "Content-Type": "application/json"
         }
@@ -150,7 +148,7 @@ checkOutForm.addEventListener('submit', function(e) {
             Swal.fire({
                 position: 'center',
                 icon: 'success',
-                title: text,
+                title: 'Member checked out successfully',
                 showConfirmButton: false,
                 timer: 1500
             })})
@@ -160,7 +158,7 @@ checkOutForm.addEventListener('submit', function(e) {
             swal.fire({
                 position: 'center',
                 icon: 'error',
-                title: text,
+                title: `Please check in the member first`,
                 showConfirmButton: false,
                 timer: 1500
             })})
@@ -264,3 +262,6 @@ freeTrailsForm.addEventListener('submit', function(e) {
             // }
         // })
     });
+
+
+   
